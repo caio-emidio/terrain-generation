@@ -19,7 +19,7 @@ for (let i = 0; i < side * side; i++) {
     pixels[i] = blocks[random]
 }
 
-for (let c = 0; c < 7; c++) {
+for (let c = 0; c < 3; c++) {
     for (let i = 0; i < side * side; i++) {
         const neighbors = []
 
@@ -76,22 +76,3 @@ for (let i = 0; i < side * side; i++) {
     context.fillStyle = pixels[i].color
     context.fillRect(x * size, y * size, size, size)
 }
-
-/*
-
-    ? Funções.
-
-    * fillStyle
-    * fillRect
-
-    ? Blocos.
-
-    * 0. Water
-    * 1. Dirt
-    * 2. Grass
-    * 3. Sand
-    * 4. Stone
-    * 5. Dark Grass
-    * 6. Deep Water
-
-*/
