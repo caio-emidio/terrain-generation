@@ -4,7 +4,7 @@ const context = canvas.getContext('2d')
 const width = canvas.width
 const height = canvas.height
 
-const side = 60
+const side = 150
 const size = width / side
 const pixels = []
 
