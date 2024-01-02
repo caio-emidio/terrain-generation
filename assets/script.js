@@ -9,70 +9,58 @@ const size = width / side
 const pixels = []
 
 const blocks = [
-    { id: 0, name: 'Water', color: 'rgba(0, 128, 255, 1)' },
-    { id: 1, name: 'Grass', color: 'rgba(34, 139, 34, 1)' },
+    { id: 0, color: '#4361ee' }, // ? ÁGUA.
+    { id: 1, color: '#43aa8b' }, // ? GRAMA.
 ]
 
-// * PRIMEIRA GERAÇÃO RANDOMICA.
+// ? GERAÇÃO ALEATÓRIA.
 for (let i = 0; i < side * side; i++) {
     const random = Math.floor(Math.random() * blocks.length)
     pixels[i] = blocks[random]
 }
 
-for (let c = 0; c < 3; c++) {
+// ? ALGORITMO.
+for (let i = 0; i < 7; i++) {
     for (let i = 0; i < side * side; i++) {
         const neighbors = []
+        const row = Math.floor(i / side)
+        const beginning = row * side
+        const column = i - beginning
 
-        const y = Math.floor(i / side)
-        const start = y * side
-        const x = i - start
+        // ? VIZINHOS.
+        if (row != 0) neighbors.push(pixels[i - side]) // ? VIZINHO SUPERIOR.
+        if (row != side - 1) neighbors.push(pixels[i + side]) // ? VIZINHO INFERIOR.
+        if (column != 0) neighbors.push(pixels[i - 1]) // ? VIZINHO À ESQUERDA.
+        if (column != side - 1) neighbors.push(pixels[i + 1]) // ? VIZINHO À DIREITA.
+        if (column != 0 && row != 0) neighbors.push(pixels[i - side - 1]) // ? VIZINHO DIAGONAL SUPERIOR ESQUERDA.
+        if (column != 0 && row != side - 1) neighbors.push(pixels[i + side - 1]) // ? VIZINHO DIAGONAL INFERIOR ESQUERDA.
+        if (column != side - 1 && row != 0) neighbors.push(pixels[i - side + 1]) // ? VIZINHO DIAGONAL SUPERIOR DIREITA.
+        if (column != side - 1 && row != side - 1) neighbors.push(pixels[i + side + 1]) // ? VIZINHO DIAGONAL INFERIOR DIREITA.
 
-        // ! GRUDADO NA ESQUERDA.
-        if (x != 0) {
-            neighbors.push(pixels[i - 1])
-        }
-        // ! GRUDADO NA DIREITA.
-        if (x != side - 1) {
-            neighbors.push(pixels[i + 1])
-        }
-        // ! GRUDADO NO TOPO.
-        if (y != 0) {
-            neighbors.push(pixels[i - side])
-        }
-        // ! GRUDADO NO FINAL.
-        if (y != side - 1) {
-            neighbors.push(pixels[i + side])
-        }
-        // ! GRUDADO NA BORDA ESQUERDA SUPERIOR.
-        if (x != 0 && y != 0) {
-            neighbors.push(pixels[i - side - 1])
-        }
-        // ! GRUDADO NA BORDA DIREITA SUPERIOR.
-        if (x != side - 1 && y != 0) {
-            neighbors.push(pixels[i - side + 1])
-        }
-        // ! GRUDADO NA BORDA ESQUERDA INFERIOR.
-        if (x != 0 && y != side - 1) {
-            neighbors.push(pixels[i + side - 1])
-        }
-        // ! GRUDADO NA BORDA DIREITA INFERIOR.
-        if (x != side - 1 && y != side - 1) {
-            neighbors.push(pixels[i + side + 1])
-        }
+        // ? CONTAGEM DE VIZINHOS.
+        const water = neighbors.filter(n => n.id === 0).length
+        const grass = neighbors.filter(n => n.id === 1).length
 
-        const grass = neighbors.filter(n => n.id == 1).length
-
-        if (pixels[i].id == 1 && grass >= 4) continue
-        if (pixels[i].id == 0 && grass >= 5) { pixels[i] = blocks[1] }
-        else { pixels[i] = blocks[0] }
+        // ? REGRAS DE MUDANÇA DE ESTADO.
+        if (pixels[i].id === 0 && grass >= 5) {
+            pixels[i] = blocks[1]
+        } else if (pixels[i].id === 1 && water >= 5) {
+            pixels[i] = blocks[0]
+        }
     }
 }
 
+// ? DESENHA NO CANVAS.
 for (let i = 0; i < side * side; i++) {
-    const y = Math.floor(i / side)
-    const start = y * side
-    const x = i - start
+    const row = Math.floor(i / side)
+    const beginning = row * side
+    const column = i - beginning
 
+    // ? PREENCHE O RETÂNGULO.
     context.fillStyle = pixels[i].color
-    context.fillRect(x * size, y * size, size, size)
+    context.fillRect(row * size, column * size, size, size)
+
+    // ? BORDA DO RETÂNGULO.
+    context.strokeStyle = 'rgba(34, 34, 34, 0.1)'
+    context.strokeRect(row * size, column * size, size, size)
 }

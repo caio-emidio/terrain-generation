@@ -22,16 +22,27 @@ body {
     font-family: Arial, Helvetica, sans-serif;
 }
 
-h1 {
-    position: fixed;
-    top: 10px;
-    left: 10px;
-    font-size: 18px;
-    font-weight: lighter;
-    margin: 20px;
-    color: rgba(34, 34, 34, 1);
+#canvas {
+    border: 1px solid #222222;
 }
 
-canvas {
-    border: 1px solid rgba(34, 34, 34, 0.6);
+#menu {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    top: 20px;
+    left: 20px;
+}
+
+#menu h1 {
+    font-size: 18px;
+    font-weight: lighter;
+    color: #222222;
+}
+
+#menu a {   
+    font-size: 14px;
+    font-weight: lighter;
+    color: #6184d8;
+    margin-top: 10px;
 }
