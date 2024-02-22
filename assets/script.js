@@ -8,6 +8,7 @@ class drawToCanvas {
     }
 
     drawOnCanvas() {
+        console.log(this.pixels);
         for (let i = 0; i < this.side * this.side; i++) {
             const row = Math.floor(i / this.side);
             const column = i % this.side;
@@ -23,11 +24,12 @@ class drawToCanvas {
 }
 
 class CellularAutomaton {
-    constructor(canvasId, sideLength, blocks) {
+    constructor(canvasId, sideLength, blocks, incidencia) {
         this.canvasId = canvasId;
         this.side = sideLength;
         this.pixels = [];
         this.blocks = blocks;
+        this.incidencia = incidencia;
     }
 
     generateRandomPixels() {
@@ -43,35 +45,40 @@ class CellularAutomaton {
     applyAutomatonRule() {
         for (let j = 0; j < this.side * this.side; j++) {
             const neighbors = this.getNeighbors(j);
-            const water = neighbors.filter(n => n.name === 'water').length;
-            const grass = neighbors.filter(n => n.name === 'grass').length;
-            const sand = neighbors.filter(n => n.name === 'sand').length;
-            const total = neighbors.length;
+
+            this.blocks.forEach(b => {
+                const value = neighbors.filter(n => n.id === id).length;
+                const incidence = this.incidencia.forEach(inc => {
+                    if(inc.idOrigin === id && value / neighbors.length >= inc.pct) {
+                        this.pixels[j] = this.blocks.find(b => b.id === incidence.idDestiny)
+                    }
+                });
+            });
 
 
-            if (this.pixels[j].name === 'water') {
-                if(grass / total >= 0.6) {
-                    this.pixels[j] = this.blocks.find(b => b.name === 'grass');
-                } else if(sand / total >= 0.9) {
-                    this.pixels[j] = this.blocks.find(b => b.name === 'sand');
-                }
-            } 
-            
-            if (this.pixels[j].name === 'grass') {
-                if(water / total >= 0.6) {
-                    this.pixels[j] = this.blocks.find(b => b.name === 'water');
-                } else if(sand / total >= 0.9) {
-                    this.pixels[j] = this.blocks.find(b => b.name === 'sand');
-                }
-            }
+            // if (this.pixels[j].name === 'water') {
+            //     if (grass / total >= 0.6) {
+            //         this.pixels[j] = this.blocks.find(b => b.name === 'grass');
+            //     } else if (sand / total >= 0.9) {
+            //         this.pixels[j] = this.blocks.find(b => b.name === 'sand');
+            //     }
+            // }
 
-            if (this.pixels[j].name === 'sand') {
-                if(water / total >= 0.6) {
-                    this.pixels[j] = this.blocks.find(b => b.name === 'water');
-                } else if(grass / total >= 0.6) {
-                    this.pixels[j] = this.blocks.find(b => b.name === 'grass');
-                }
-            }
+            // if (this.pixels[j].name === 'grass') {
+            //     if (water / total >= 0.6) {
+            //         this.pixels[j] = this.blocks.find(b => b.name === 'water');
+            //     } else if (sand / total >= 0.9) {
+            //         this.pixels[j] = this.blocks.find(b => b.name === 'sand');
+            //     }
+            // }
+
+            // if (this.pixels[j].name === 'sand') {
+            //     if (water / total >= 0.6) {
+            //         this.pixels[j] = this.blocks.find(b => b.name === 'water');
+            //     } else if (grass / total >= 0.6) {
+            //         this.pixels[j] = this.blocks.find(b => b.name === 'grass');
+            //     }
+            // }
         }
     }
 
@@ -80,6 +87,7 @@ class CellularAutomaton {
         const row = Math.floor(index / this.side);
         const column = index % this.side;
 
+        
         // get the neighbor from top
         if (row > 0) {
             const neighborIndex = (row - 1) * this.side + column;
@@ -150,5 +158,33 @@ const blocks = [
     { id: 2, color: '#f4a261', name: "sand" },
 ];
 
-const automaton = new CellularAutomaton('canvas', 100, blocks);
+const incidencia = [
+    {
+        idOrigin: 0,
+        idDestiny: 1,
+        pct: 0.6
+    }, {
+        idOrigin: 0,
+        idDestiny: 2,
+        pct: 0.9
+    }, {
+        idOrigin: 1,
+        idDestiny: 0,
+        pct: 0.6
+    }, {
+        idOrigin: 1,
+        idDestiny: 2,
+        pct: 0.9
+    }, {
+        idOrigin: 2,
+        idDestiny: 0,
+        pct: 0.6
+    }, {
+        idOrigin: 2,
+        idDestiny: 1,
+        pct: 0.6
+    }
+];
+
+const automaton = new CellularAutomaton('canvas', 2, blocks, incidencia);
 automaton.run();
